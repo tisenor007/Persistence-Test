@@ -12,6 +12,8 @@ public class GameControl : MonoBehaviour
     public static GameControl control;
 
     public GameObject canvas;
+    public GameObject gameOverCanvas;
+    public GameObject titleCanvas;
     public GameObject player;
     [Header("Text Values")]
     public Text healthUIValue;
@@ -35,6 +37,9 @@ public class GameControl : MonoBehaviour
     private int startAmmo = 1000;
     private float startMoney = 200;
 
+    private Scene currentScene;
+    private string sceneName;
+
     void Awake()
     {
         if (control == null)
@@ -42,6 +47,8 @@ public class GameControl : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(canvas);
             DontDestroyOnLoad(player);
+            DontDestroyOnLoad(gameOverCanvas);
+            DontDestroyOnLoad(titleCanvas);
             control = this;
         }
         else if (control != this)
@@ -49,23 +56,34 @@ public class GameControl : MonoBehaviour
             Destroy(gameObject);
             Destroy(canvas);
             Destroy(player);
+            Destroy(gameOverCanvas);
+            Destroy(titleCanvas);
         }
     }
 
     private void Start()
     {
-        ResetStats();
+        canvas.SetActive(false);
+        player.SetActive(false);
+        gameOverCanvas.SetActive(false);
+        titleCanvas.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
+
         healthUIValue.text = health.ToString();
         shieldUIValue.text = shield.ToString();
         XPUIValue.text = XP.ToString();
         killsUIValues.text = kills.ToString();
         ammoUIValues.text = ammo.ToString();
         moneyUIValues.text = money.ToString();
+
+        currentScene = SceneManager.GetActiveScene();
+        sceneName = currentScene.name;
+
+        Debug.Log("Game Managers: " + GameObject.FindGameObjectsWithTag("GameManager").Length);
     }
 
     public void Save()
@@ -79,9 +97,12 @@ public class GameControl : MonoBehaviour
         data.XP = XP;
         data.kills = kills;
         data.money = money;
+        data.lastLoadedScene = sceneName;
 
         bf.Serialize(file, data);
         file.Close();
+
+        Debug.Log(data.lastLoadedScene);
     }
     public void Load()
     {
@@ -93,6 +114,11 @@ public class GameControl : MonoBehaviour
             PlayerData data = (PlayerData)bf.Deserialize(file);
             file.Close();
 
+            canvas.SetActive(true);
+            player.SetActive(true);
+            gameOverCanvas.SetActive(false);
+            titleCanvas.SetActive(false);
+            SceneManager.LoadScene(data.lastLoadedScene, LoadSceneMode.Single);
             health = data.health;
             shield = data.shield;
             XP = data.XP;
@@ -102,8 +128,15 @@ public class GameControl : MonoBehaviour
 
         }
     }
-    public void ResetStats()
+    //stats button methods
+    public void ResetGame()
     {
+        canvas.SetActive(true);
+        player.SetActive(true);
+        gameOverCanvas.SetActive(false);
+        titleCanvas.SetActive(false);
+
+        GoToScene1();
         health = startHealth;
         shield = startShield;
         ammo = startAmmo;
@@ -203,6 +236,22 @@ public class GameControl : MonoBehaviour
     {
         SceneManager.LoadScene("Scene1", LoadSceneMode.Single);
     }
+    public void GoToTitleScreen()
+    {
+        canvas.SetActive(false);
+        player.SetActive(false);
+        gameOverCanvas.SetActive(false);
+        titleCanvas.SetActive(true);
+        SceneManager.LoadScene("Titlescreen", LoadSceneMode.Single);
+    }
+    public void GoToGameOver()
+    {
+        canvas.SetActive(false);
+        player.SetActive(false);
+        gameOverCanvas.SetActive(true);
+        titleCanvas.SetActive(false);
+        SceneManager.LoadScene("GameOverScreen", LoadSceneMode.Single);
+    }
 }
 [Serializable]
 class PlayerData
@@ -213,4 +262,5 @@ class PlayerData
     public int kills;
     public int ammo;
     public float money;
+    public string lastLoadedScene;
 }
