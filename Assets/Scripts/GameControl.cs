@@ -15,6 +15,7 @@ public class GameControl : MonoBehaviour
     public GameObject gameOverCanvas;
     public GameObject titleCanvas;
     public GameObject player;
+    public Image savedImage;
     [Header("Text Values")]
     public Text healthUIValue;
     public Text shieldUIValue;
@@ -98,11 +99,13 @@ public class GameControl : MonoBehaviour
         data.kills = kills;
         data.money = money;
         data.lastLoadedScene = sceneName;
+        ScreenShotHandler.TakeScreenshot_Static(Screen.width, Screen.width);
+
+        Debug.Log(data.lastLoadedScene);
 
         bf.Serialize(file, data);
         file.Close();
 
-        Debug.Log(data.lastLoadedScene);
     }
     public void Load()
     {
@@ -235,6 +238,14 @@ public class GameControl : MonoBehaviour
     public void GoToScene1()
     {
         SceneManager.LoadScene("Scene1", LoadSceneMode.Single);
+    }
+    public void GoToScene3()
+    {
+        SceneManager.LoadScene("Scene3", LoadSceneMode.Single);
+    }
+    public void CloseGame()
+    {
+        Application.Quit();
     }
     public void GoToTitleScreen()
     {
