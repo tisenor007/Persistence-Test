@@ -7,15 +7,14 @@ using System.IO;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameControl : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    public static GameControl control;
+    public static GameManager control;
 
     public GameObject canvas;
     public GameObject gameOverCanvas;
     public GameObject titleCanvas;
     public GameObject player;
-    public Image savedImage;
     [Header("Text Values")]
     public Text healthUIValue;
     public Text shieldUIValue;

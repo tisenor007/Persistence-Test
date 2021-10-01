@@ -3527,7 +3527,6 @@ MonoBehaviour:
   gameOverCanvas: {fileID: 1738546154}
   titleCanvas: {fileID: 258808525}
   player: {fileID: 314013981}
-  savedImage: {fileID: 0}
   healthUIValue: {fileID: 680199525}
   shieldUIValue: {fileID: 318065310}
   XPUIValue: {fileID: 1271341350}
